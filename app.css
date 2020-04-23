@@ -58,3 +58,67 @@ nav {
   justify-content: center;
   align-items: center;
 }
+
+.tracker-container,
+.sign-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cards {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-content: center;
+  margin: 20px 0px;
+  height: 250px;
+  width: 80%;
+  background: white;
+  box-shadow: 1px 1px 2px 1px #888;
+  border-radius: 6px;
+}
+
+.tracker-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.title--tracker {
+  width: 70%;
+  color: white;
+  background: #ff9b00;
+  border-radius: 4px;
+  box-shadow: 2px 2px 3px 2px #ccc;
+  padding: 10px;
+  margin: 16px;
+}
+
+.sQ {
+  opacity: 0.87;
+}
+
+.offline-text {
+  margin-bottom: 16px;
+  opacity: 0.87;
+}
+
+.user-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 1px 1px 2px 1px #ccc;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.sign-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
