@@ -106,19 +106,19 @@ nav {
   opacity: 0.87;
 }
 
-.user-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 1px 1px 2px 1px #ccc;
-  border-radius: 6px;
-  padding: 10px;
-}
-
 .sign-content {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+.details-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 1px 1px 2px 1px #ccc;
+  border-radius: 6px;
+  padding: 10px;
 }

@@ -152,25 +152,36 @@ var mainRender = function (state) {
             var signContainer = document.createElement("div");
             var signer = document.createElement("div");
             var signContent = document.createElement("div");
-            var userCont = document.createElement("div");
-            var user = document.createElement("img");
-            var signQuestion = document.createElement("p");
+            var detailsForm = document.createElement("form");
+            var mailTitle = document.createElement("label");
+            var mailInput = document.createElement("input");
+            var pWTitle = document.createElement("label");
+            var pWInput = document.createElement("input");
             signContainer.setAttribute("id", "sign-container");
             signer.setAttribute("id", "signer");
             signContent.setAttribute("id", "sign-content");
-            userCont.setAttribute("id", "user-container");
-            user.setAttribute("id", "user");
-            signQuestion.setAttribute("id", "sQ");
+            detailsForm.setAttribute("id", "details-form");
+            mailTitle.setAttribute("id", "mail-title");
+            mailInput.setAttribute("id", "mail-input");
+            pWTitle.setAttribute("id", "password-title");
+            pWInput.setAttribute("id", "password-input");
             signContainer.setAttribute("class", "sign-container");
             signer.setAttribute("class", "cards");
             signContent.setAttribute("class", "sign-content");
-            userCont.setAttribute("class", "user-container");
-            user.setAttribute("class", "user");
-            signQuestion.setAttribute("class", "sQ");
-            user.setAttribute("src", "./images/logo11.png");
-            user.setAttribute("height", "50px");
-            user.setAttribute("width", "50px");
-            signQuestion.textContent = "Sign-in as User1?";
+            detailsForm.setAttribute("class", "details-form");
+            mailTitle.setAttribute("class", "mail-title");
+            mailInput.setAttribute("class", "mail-input");
+            pWTitle.setAttribute("class", "password-title");
+            pWInput.setAttribute("class", "password-input");
+            detailsForm.setAttribute;
+            mailTitle.setAttribute("for", "mail-input");
+            mailInput.setAttribute("type", "email");
+            mailInput.setAttribute("name", "mail-input");
+            pWTitle.setAttribute("for", "password-input");
+            pWInput.setAttribute("type", "text");
+            pWInput.setAttribute("name", "password-input");
+            mailTitle.innerText = "Email";
+            pWTitle.innerText = "Password";
             var signIn = document.createElement("button");
             signIn.textContent = "SIGNIN";
             signIn.setAttribute("id", "signinFinal");
@@ -178,16 +189,27 @@ var mainRender = function (state) {
             main === null || main === void 0 ? void 0 : main.appendChild(signContainer);
             signContainer.appendChild(signer);
             signer.appendChild(signContent);
-            signContent.appendChild(userCont);
-            userCont.appendChild(user);
-            userCont.appendChild(signQuestion);
-            signContent.appendChild(signIn);
-            signIn.addEventListener("click", function () {
-                state.signedIn = "true";
-                state.main = "home";
-                linksRender(state);
-                mainRender(state);
+            signContent.appendChild(detailsForm);
+            detailsForm.appendChild(mailTitle);
+            detailsForm.appendChild(mailInput);
+            detailsForm.appendChild(pWTitle);
+            detailsForm.appendChild(pWInput);
+            detailsForm.appendChild(signIn);
+            // auth
+            var signupForm = document.querySelector("#details-form");
+            signupForm === null || signupForm === void 0 ? void 0 : signupForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+                var email = document.getElementById("mail-input")
+                    .value;
+                var password = (document.getElementById("password-input")).value;
+                console.log(email, password);
             });
+            /* signIn.addEventListener("click", () => {
+              state.signedIn = "true";
+              state.main = "home";
+              linksRender(state);
+              mainRender(state);
+            }); */
         }
     }
 };

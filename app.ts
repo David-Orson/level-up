@@ -184,28 +184,42 @@ const mainRender = (state: any) => {
       const signContainer = document.createElement("div");
       const signer = document.createElement("div");
       const signContent = document.createElement("div");
-      let userCont = document.createElement("div");
-      let user = document.createElement("img");
-      const signQuestion = document.createElement("p");
+      const detailsForm = document.createElement("form");
+      const mailTitle = document.createElement("label");
+      const mailInput = document.createElement("input");
+      const pWTitle = document.createElement("label");
+      const pWInput = document.createElement("input");
 
       signContainer.setAttribute("id", "sign-container");
       signer.setAttribute("id", "signer");
       signContent.setAttribute("id", "sign-content");
-      userCont.setAttribute("id", "user-container");
-      user.setAttribute("id", "user");
-      signQuestion.setAttribute("id", "sQ");
+      detailsForm.setAttribute("id", "details-form");
+      mailTitle.setAttribute("id", "mail-title");
+      mailInput.setAttribute("id", "mail-input");
+      pWTitle.setAttribute("id", "password-title");
+      pWInput.setAttribute("id", "password-input");
 
       signContainer.setAttribute("class", "sign-container");
       signer.setAttribute("class", "cards");
       signContent.setAttribute("class", "sign-content");
-      userCont.setAttribute("class", "user-container");
-      user.setAttribute("class", "user");
-      signQuestion.setAttribute("class", "sQ");
-      user.setAttribute("src", "./images/logo11.png");
-      user.setAttribute("height", "50px");
-      user.setAttribute("width", "50px");
+      detailsForm.setAttribute("class", "details-form");
+      mailTitle.setAttribute("class", "mail-title");
+      mailInput.setAttribute("class", "mail-input");
+      pWTitle.setAttribute("class", "password-title");
+      pWInput.setAttribute("class", "password-input");
 
-      signQuestion.textContent = "Sign-in as User1?";
+      detailsForm.setAttribute;
+
+      mailTitle.setAttribute("for", "mail-input");
+      mailInput.setAttribute("type", "email");
+      mailInput.setAttribute("name", "mail-input");
+
+      pWTitle.setAttribute("for", "password-input");
+      pWInput.setAttribute("type", "text");
+      pWInput.setAttribute("name", "password-input");
+
+      mailTitle.innerText = "Email";
+      pWTitle.innerText = "Password";
 
       let signIn = document.createElement("button");
 
@@ -216,17 +230,34 @@ const mainRender = (state: any) => {
       main?.appendChild(signContainer);
       signContainer.appendChild(signer);
       signer.appendChild(signContent);
-      signContent.appendChild(userCont);
-      userCont.appendChild(user);
-      userCont.appendChild(signQuestion);
-      signContent.appendChild(signIn);
+      signContent.appendChild(detailsForm);
 
-      signIn.addEventListener("click", () => {
+      detailsForm.appendChild(mailTitle);
+      detailsForm.appendChild(mailInput);
+      detailsForm.appendChild(pWTitle);
+      detailsForm.appendChild(pWInput);
+      detailsForm.appendChild(signIn);
+
+      // auth
+
+      const signupForm = document.querySelector("#details-form");
+      signupForm?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = (<HTMLInputElement>document.getElementById("mail-input"))
+          .value;
+        const password = (<HTMLInputElement>(
+          document.getElementById("password-input")
+        )).value;
+
+        console.log(email, password);
+      });
+
+      /* signIn.addEventListener("click", () => {
         state.signedIn = "true";
         state.main = "home";
         linksRender(state);
         mainRender(state);
-      });
+      }); */
     }
   }
 };
