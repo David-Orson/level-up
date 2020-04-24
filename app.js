@@ -45,6 +45,7 @@ title1.addEventListener("click", function () {
 var linksRender = function (state) {
     console.log(state);
     var signIn = document.createElement("button");
+    var signUp = document.createElement("button");
     var signedInLinks = document.createElement("div");
     var signOut = document.createElement("button");
     var user = document.createElement("img");
@@ -53,12 +54,24 @@ var linksRender = function (state) {
         if (out) {
             navContainer.removeChild(out);
         }
+        var signingLinksContainer = document.createElement("div");
+        signingLinksContainer.setAttribute("id", "links-container");
+        signingLinksContainer.setAttribute("class", "links-container");
         signIn.textContent = "SIGNIN";
         signIn.setAttribute("id", "signin");
         signIn.setAttribute("class", "btn");
-        navContainer === null || navContainer === void 0 ? void 0 : navContainer.appendChild(signIn);
+        signUp.textContent = "SIGNUP";
+        signUp.setAttribute("id", "signup");
+        signUp.setAttribute("class", "btn");
+        navContainer === null || navContainer === void 0 ? void 0 : navContainer.appendChild(signingLinksContainer);
+        signingLinksContainer === null || signingLinksContainer === void 0 ? void 0 : signingLinksContainer.appendChild(signIn);
+        signingLinksContainer === null || signingLinksContainer === void 0 ? void 0 : signingLinksContainer.appendChild(signUp);
         signIn.addEventListener("click", function () {
             state.main = "signin";
+            mainRender(state);
+        });
+        signUp.addEventListener("click", function () {
+            state.main = "signup";
             mainRender(state);
         });
     }
@@ -80,10 +93,14 @@ var linksRender = function (state) {
         navContainer === null || navContainer === void 0 ? void 0 : navContainer.appendChild(signedInLinks);
         signedInLinks === null || signedInLinks === void 0 ? void 0 : signedInLinks.appendChild(user);
         signedInLinks === null || signedInLinks === void 0 ? void 0 : signedInLinks.appendChild(signOut);
-        signOut.addEventListener("click", function () {
-            state.signedIn = "false";
-            linksRender(state);
-            mainRender(state);
+        signOut.addEventListener("click", function (e) {
+            e.preventDefault();
+            delete state.token;
+            auth.signOut().then(function () {
+                state.signedIn = "false";
+                linksRender(state);
+                mainRender(state);
+            });
         });
     }
 };
@@ -154,7 +171,7 @@ var mainRender = function (state) {
             content.appendChild(offline);
         }
     }
-    else if (state.main === "signin") {
+    else if (state.main === "signup") {
         var trackerCon = document.querySelector("#tracker-container");
         if (trackerCon) {
             main === null || main === void 0 ? void 0 : main.removeChild(trackerCon);
@@ -197,7 +214,7 @@ var mainRender = function (state) {
             mailTitle.innerText = "Email";
             pWTitle.innerText = "Password";
             var signIn = document.createElement("button");
-            signIn.textContent = "SIGNIN";
+            signIn.textContent = "SIGNUP";
             signIn.setAttribute("id", "signinFinal");
             signIn.setAttribute("class", "btn");
             main === null || main === void 0 ? void 0 : main.appendChild(signContainer);
@@ -210,8 +227,8 @@ var mainRender = function (state) {
             detailsForm.appendChild(pWInput);
             detailsForm.appendChild(signIn);
             // auth
-            var signupForm = document.querySelector("#details-form");
-            signupForm === null || signupForm === void 0 ? void 0 : signupForm.addEventListener("submit", function (e) {
+            var signupForm_1 = document.querySelector("#details-form");
+            signupForm_1 === null || signupForm_1 === void 0 ? void 0 : signupForm_1.addEventListener("submit", function (e) {
                 e.preventDefault();
                 var email = document.getElementById("mail-input")
                     .value;
@@ -220,6 +237,14 @@ var mainRender = function (state) {
                     .createUserWithEmailAndPassword(email, password)
                     .then(function (cred) {
                     console.log(cred);
+                    signupForm_1.reset();
+                    if (cred.user.refreshToken) {
+                        state.signedIn = "True";
+                        state.main = "home";
+                        state.token = cred.user.refreshToken;
+                        linksRender(state);
+                        mainRender(state);
+                    }
                 });
             });
             /* signIn.addEventListener("click", () => {

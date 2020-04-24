@@ -59,6 +59,7 @@ title1.addEventListener("click", () => {
 const linksRender = (state: any) => {
   console.log(state);
   const signIn = document.createElement("button");
+  const signUp = document.createElement("button");
 
   const signedInLinks = document.createElement("div");
   const signOut = document.createElement("button");
@@ -68,14 +69,30 @@ const linksRender = (state: any) => {
     if (out) {
       navContainer.removeChild(out);
     }
+    const signingLinksContainer = document.createElement("div");
+
+    signingLinksContainer.setAttribute("id", "links-container");
+    signingLinksContainer.setAttribute("class", "links-container");
+
     signIn.textContent = "SIGNIN";
     signIn.setAttribute("id", "signin");
     signIn.setAttribute("class", "btn");
 
-    navContainer?.appendChild(signIn);
+    signUp.textContent = "SIGNUP";
+    signUp.setAttribute("id", "signup");
+    signUp.setAttribute("class", "btn");
+
+    navContainer?.appendChild(signingLinksContainer);
+    signingLinksContainer?.appendChild(signIn);
+    signingLinksContainer?.appendChild(signUp);
 
     signIn.addEventListener("click", () => {
       state.main = "signin";
+      mainRender(state);
+    });
+
+    signUp.addEventListener("click", () => {
+      state.main = "signup";
       mainRender(state);
     });
   } else {
@@ -101,10 +118,14 @@ const linksRender = (state: any) => {
     signedInLinks?.appendChild(user);
     signedInLinks?.appendChild(signOut);
 
-    signOut.addEventListener("click", () => {
-      state.signedIn = "false";
-      linksRender(state);
-      mainRender(state);
+    signOut.addEventListener("click", (e: any) => {
+      e.preventDefault();
+      delete state.token;
+      auth.signOut().then(() => {
+        state.signedIn = "false";
+        linksRender(state);
+        mainRender(state);
+      });
     });
   }
 };
@@ -189,7 +210,7 @@ const mainRender = (state: any) => {
       content.appendChild(trackerTitle);
       content.appendChild(offline);
     }
-  } else if (state.main === "signin") {
+  } else if (state.main === "signup") {
     let trackerCon = document.querySelector("#tracker-container");
     if (trackerCon) {
       main?.removeChild(trackerCon);
@@ -239,7 +260,7 @@ const mainRender = (state: any) => {
 
       let signIn = document.createElement("button");
 
-      signIn.textContent = "SIGNIN";
+      signIn.textContent = "SIGNUP";
       signIn.setAttribute("id", "signinFinal");
       signIn.setAttribute("class", "btn");
 
@@ -256,7 +277,9 @@ const mainRender = (state: any) => {
 
       // auth
 
-      const signupForm = document.querySelector("#details-form");
+      const signupForm: HTMLFormElement | null = document.querySelector(
+        "#details-form"
+      );
       signupForm?.addEventListener("submit", (e) => {
         e.preventDefault();
         const email = (<HTMLInputElement>document.getElementById("mail-input"))
@@ -269,6 +292,15 @@ const mainRender = (state: any) => {
           .createUserWithEmailAndPassword(email, password)
           .then((cred: any) => {
             console.log(cred);
+            signupForm.reset();
+            if (cred.user.refreshToken) {
+              state.signedIn = "True";
+              state.main = "home";
+              state.token = cred.user.refreshToken;
+
+              linksRender(state);
+              mainRender(state);
+            }
           });
       });
 
