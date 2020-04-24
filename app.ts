@@ -16,9 +16,31 @@ const db = firebase.firestore();
 
 // State
 
+// auth listener
+
+auth.onAuthStateChanged((user: any) => {
+  if (user) {
+    console.log(user);
+    console.log(
+      `user ${user.email} is logged in with token ${user.refreshToken}`
+    );
+    if (state.signedIn === "false") {
+      state.signedIn = "true";
+      state.token = user.refreshToken;
+      linksRender(state);
+      mainRender(state);
+    }
+  } else {
+    console.log(`user is not logged in`);
+  }
+});
+
+function authListenerChangeState(user: any, state: any) {}
+
 const state = {
   signedIn: "false",
   main: "home",
+  token: "",
 };
 
 // Nav

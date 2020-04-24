@@ -14,9 +14,27 @@ firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
 // State
+// auth listener
+auth.onAuthStateChanged(function (user) {
+    if (user) {
+        console.log(user);
+        console.log("user " + user.email + " is logged in with token " + user.refreshToken);
+        if (state.signedIn === "false") {
+            state.signedIn = "true";
+            state.token = user.refreshToken;
+            linksRender(state);
+            mainRender(state);
+        }
+    }
+    else {
+        console.log("user is not logged in");
+    }
+});
+function authListenerChangeState(user, state) { }
 var state = {
     signedIn: "false",
     main: "home",
+    token: "",
 };
 // Nav
 var root = document.querySelector("#root");
