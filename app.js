@@ -27,8 +27,8 @@ auth.onAuthStateChanged(function (user) {
                     state.signedIn = "true";
                     state.username = doc.data().username;
                     (state.email = user.email), (state.token = user.refreshToken);
-                    linksRender(state);
-                    mainRender(state);
+                    linksRender();
+                    mainRender();
                 }
             });
         });
@@ -66,10 +66,10 @@ root === null || root === void 0 ? void 0 : root.appendChild(mainDiv);
 nav === null || nav === void 0 ? void 0 : nav.appendChild(navContainer);
 title1.addEventListener("click", function () {
     state.main = "home";
-    mainRender(state);
+    mainRender();
 });
 // Signing Links
-var linksRender = function (state) {
+var linksRender = function () {
     console.log(state);
     var signIn = document.createElement("button");
     var signUp = document.createElement("button");
@@ -95,11 +95,11 @@ var linksRender = function (state) {
         signingLinksContainer === null || signingLinksContainer === void 0 ? void 0 : signingLinksContainer.appendChild(signUp);
         signIn.addEventListener("click", function () {
             state.main = "signin";
-            mainRender(state);
+            mainRender();
         });
         signUp.addEventListener("click", function () {
             state.main = "signup";
-            mainRender(state);
+            mainRender();
         });
     }
     else {
@@ -125,15 +125,15 @@ var linksRender = function (state) {
             delete state.token;
             auth.signOut().then(function () {
                 state.signedIn = "false";
-                linksRender(state);
-                mainRender(state);
+                linksRender();
+                mainRender();
             });
         });
     }
 };
-linksRender(state);
+linksRender();
 // Home
-var mainRender = function (state) {
+var mainRender = function () {
     console.log(state);
     var main = document.querySelector("#main");
     if (state.main === "home") {
@@ -203,14 +203,17 @@ var mainRender = function (state) {
                         Object.keys(data).forEach(function (subDoc) {
                             var skillData = Object.keys(data.skill);
                             skillData.forEach(function (skillKey) {
+                                var skillValues = document.createElement("div");
                                 var skillTitle = document.createElement("h4");
                                 var hours = document.createElement("p");
+                                skillValues.setAttribute("class", "skill-values");
                                 skillTitle.setAttribute("class", "skill-title");
                                 hours.setAttribute("class", "hours");
                                 skillTitle.textContent = skillKey;
                                 hours.textContent = data.skill[skillKey];
-                                subjectContainer.appendChild(skillTitle);
-                                subjectContainer.appendChild(hours);
+                                subjectContainer.appendChild(skillValues);
+                                skillValues.appendChild(skillTitle);
+                                skillValues.appendChild(hours);
                             });
                         });
                     });
@@ -381,7 +384,7 @@ var mainRender = function (state) {
                 .createUserWithEmailAndPassword(email, password)
                 .then(function (cred) {
                 if (cred.user.refreshToken) {
-                    state.signedIn = "True";
+                    state.signedIn = "true";
                     state.main = "home";
                     state.token = cred.user.refreshToken;
                 }
@@ -397,8 +400,8 @@ var mainRender = function (state) {
                 .then(function (cred) {
                 signupForm_1.reset();
                 state.username = username;
-                linksRender(state);
-                mainRender(state);
+                linksRender();
+                mainRender();
             });
         });
     }
@@ -471,11 +474,11 @@ var mainRender = function (state) {
                     state.signedIn = "True";
                     state.main = "home";
                     state.token = cred.user.refreshToken;
-                    linksRender(state);
-                    mainRender(state);
+                    linksRender();
+                    mainRender();
                 }
             });
         });
     }
 };
-mainRender(state);
+mainRender();

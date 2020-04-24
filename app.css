@@ -165,3 +165,28 @@ nav {
   margin: 12px;
   cursor: pointer;
 }
+
+.subject-title {
+  font-size: 28px;
+  padding: 10px;
+  word-wrap: break-word;
+}
+
+.skill-values {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0px;
+}
+
+.skill-title {
+  margin-left: 40px;
+}
+
+.hours {
+  background: white;
+  color: black;
+  opacity: 0.87;
+  padding: 4px;
+  border-radius: 3px;
+  margin-right: 40px;
+}

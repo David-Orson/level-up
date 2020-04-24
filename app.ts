@@ -35,8 +35,8 @@ auth.onAuthStateChanged((user: any) => {
             state.username = doc.data().username;
             (state.email = user.email), (state.token = user.refreshToken);
 
-            linksRender(state);
-            mainRender(state);
+            linksRender();
+            mainRender();
           }
         });
       });
@@ -85,12 +85,12 @@ nav?.appendChild(navContainer);
 
 title1.addEventListener("click", () => {
   state.main = "home";
-  mainRender(state);
+  mainRender();
 });
 
 // Signing Links
 
-const linksRender = (state: any) => {
+const linksRender = () => {
   console.log(state);
   const signIn = document.createElement("button");
   const signUp = document.createElement("button");
@@ -122,12 +122,12 @@ const linksRender = (state: any) => {
 
     signIn.addEventListener("click", () => {
       state.main = "signin";
-      mainRender(state);
+      mainRender();
     });
 
     signUp.addEventListener("click", () => {
       state.main = "signup";
-      mainRender(state);
+      mainRender();
     });
   } else {
     let myIn = document.querySelector("#links-container");
@@ -157,18 +157,18 @@ const linksRender = (state: any) => {
       delete state.token;
       auth.signOut().then(() => {
         state.signedIn = "false";
-        linksRender(state);
-        mainRender(state);
+        linksRender();
+        mainRender();
       });
     });
   }
 };
 
-linksRender(state);
+linksRender();
 
 // Home
 
-const mainRender = (state: any) => {
+const mainRender = () => {
   console.log(state);
   const main: HTMLElement | null = document.querySelector("#main");
   if (state.main === "home") {
@@ -255,17 +255,20 @@ const mainRender = (state: any) => {
                 let skillData = Object.keys(data.skill);
 
                 skillData.forEach((skillKey) => {
+                  const skillValues = document.createElement("div");
                   const skillTitle = document.createElement("h4");
                   const hours = document.createElement("p");
 
+                  skillValues.setAttribute("class", "skill-values");
                   skillTitle.setAttribute("class", "skill-title");
                   hours.setAttribute("class", "hours");
 
                   skillTitle.textContent = skillKey;
                   hours.textContent = data.skill[skillKey];
 
-                  subjectContainer.appendChild(skillTitle);
-                  subjectContainer.appendChild(hours);
+                  subjectContainer.appendChild(skillValues);
+                  skillValues.appendChild(skillTitle);
+                  skillValues.appendChild(hours);
                 });
               });
             });
@@ -475,7 +478,7 @@ const mainRender = (state: any) => {
         .createUserWithEmailAndPassword(email, password)
         .then((cred: any) => {
           if (cred.user.refreshToken) {
-            state.signedIn = "True";
+            state.signedIn = "true";
             state.main = "home";
             state.token = cred.user.refreshToken;
           }
@@ -492,8 +495,8 @@ const mainRender = (state: any) => {
           signupForm.reset();
           state.username = username;
 
-          linksRender(state);
-          mainRender(state);
+          linksRender();
+          mainRender();
         });
     });
   } else if (state.main === "signin") {
@@ -583,12 +586,12 @@ const mainRender = (state: any) => {
           state.main = "home";
           state.token = cred.user.refreshToken;
 
-          linksRender(state);
-          mainRender(state);
+          linksRender();
+          mainRender();
         }
       });
     });
   }
 };
 
-mainRender(state);
+mainRender();
