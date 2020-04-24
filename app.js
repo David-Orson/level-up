@@ -30,7 +30,7 @@ auth.onAuthStateChanged(function (user) {
         console.log("user is not logged in");
     }
 });
-function authListenerChangeState(user, state) { }
+// store
 var state = {
     signedIn: "false",
     main: "home",
@@ -202,6 +202,8 @@ var mainRender = function (state) {
         var signer = document.createElement("div");
         var signContent = document.createElement("div");
         var detailsForm = document.createElement("form");
+        var usernameTitle = document.createElement("label");
+        var usernameInput = document.createElement("input");
         var mailTitle = document.createElement("label");
         var mailInput = document.createElement("input");
         var pWTitle = document.createElement("label");
@@ -210,6 +212,8 @@ var mainRender = function (state) {
         signer.setAttribute("id", "signer");
         signContent.setAttribute("id", "sign-content");
         detailsForm.setAttribute("id", "details-form");
+        usernameTitle.setAttribute("id", "username-title");
+        usernameInput.setAttribute("id", "username-input");
         mailTitle.setAttribute("id", "mail-title");
         mailInput.setAttribute("id", "mail-input");
         pWTitle.setAttribute("id", "password-title");
@@ -218,17 +222,22 @@ var mainRender = function (state) {
         signer.setAttribute("class", "cards");
         signContent.setAttribute("class", "sign-content");
         detailsForm.setAttribute("class", "details-form");
+        usernameTitle.setAttribute("class", "username-title");
+        usernameInput.setAttribute("class", "username-input");
         mailTitle.setAttribute("class", "mail-title");
         mailInput.setAttribute("class", "mail-input");
         pWTitle.setAttribute("class", "password-title");
         pWInput.setAttribute("class", "password-input");
-        detailsForm.setAttribute;
+        usernameTitle.setAttribute("for", "mail-input");
+        usernameInput.setAttribute("type", "text");
+        usernameInput.setAttribute("name", "mail-input");
         mailTitle.setAttribute("for", "mail-input");
         mailInput.setAttribute("type", "email");
         mailInput.setAttribute("name", "mail-input");
         pWTitle.setAttribute("for", "password-input");
-        pWInput.setAttribute("type", "text");
+        pWInput.setAttribute("type", "password");
         pWInput.setAttribute("name", "password-input");
+        usernameTitle.innerText = "Username";
         mailTitle.innerText = "Email";
         pWTitle.innerText = "Password";
         var signIn = document.createElement("button");
@@ -239,6 +248,8 @@ var mainRender = function (state) {
         signContainer.appendChild(signer);
         signer.appendChild(signContent);
         signContent.appendChild(detailsForm);
+        detailsForm.appendChild(usernameTitle);
+        detailsForm.appendChild(usernameInput);
         detailsForm.appendChild(mailTitle);
         detailsForm.appendChild(mailInput);
         detailsForm.appendChild(pWTitle);
@@ -248,19 +259,27 @@ var mainRender = function (state) {
         var signupForm_1 = document.querySelector("#details-form");
         signupForm_1 === null || signupForm_1 === void 0 ? void 0 : signupForm_1.addEventListener("submit", function (e) {
             e.preventDefault();
+            var username = (document.getElementById("username-input")).value;
             var email = document.getElementById("mail-input")
                 .value;
             var password = (document.getElementById("password-input")).value;
-            auth.createUserWithEmailAndPassword(email, password).then(function (cred) {
-                console.log(cred);
-                signupForm_1.reset();
+            auth
+                .createUserWithEmailAndPassword(email, password)
+                .then(function (cred) {
                 if (cred.user.refreshToken) {
                     state.signedIn = "True";
                     state.main = "home";
                     state.token = cred.user.refreshToken;
-                    linksRender(state);
-                    mainRender(state);
                 }
+                return db.collection("user").doc(cred.user.uid).set({
+                    username: username,
+                });
+            })
+                .then(function (cred) {
+                signupForm_1.reset();
+                state.username = username;
+                linksRender(state);
+                mainRender(state);
             });
         });
     }
@@ -302,7 +321,7 @@ var mainRender = function (state) {
         mailInput.setAttribute("type", "email");
         mailInput.setAttribute("name", "mail-input");
         pWTitle.setAttribute("for", "password-input");
-        pWInput.setAttribute("type", "text");
+        pWInput.setAttribute("type", "password");
         pWInput.setAttribute("name", "password-input");
         mailTitle.innerText = "Email";
         pWTitle.innerText = "Password";

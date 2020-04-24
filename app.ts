@@ -35,7 +35,7 @@ auth.onAuthStateChanged((user: any) => {
   }
 });
 
-function authListenerChangeState(user: any, state: any) {}
+// store
 
 const state = {
   signedIn: "false",
@@ -245,6 +245,8 @@ const mainRender = (state: any) => {
     const signer = document.createElement("div");
     const signContent = document.createElement("div");
     const detailsForm = document.createElement("form");
+    const usernameTitle = document.createElement("label");
+    const usernameInput = document.createElement("input");
     const mailTitle = document.createElement("label");
     const mailInput = document.createElement("input");
     const pWTitle = document.createElement("label");
@@ -254,6 +256,8 @@ const mainRender = (state: any) => {
     signer.setAttribute("id", "signer");
     signContent.setAttribute("id", "sign-content");
     detailsForm.setAttribute("id", "details-form");
+    usernameTitle.setAttribute("id", "username-title");
+    usernameInput.setAttribute("id", "username-input");
     mailTitle.setAttribute("id", "mail-title");
     mailInput.setAttribute("id", "mail-input");
     pWTitle.setAttribute("id", "password-title");
@@ -263,21 +267,26 @@ const mainRender = (state: any) => {
     signer.setAttribute("class", "cards");
     signContent.setAttribute("class", "sign-content");
     detailsForm.setAttribute("class", "details-form");
+    usernameTitle.setAttribute("class", "username-title");
+    usernameInput.setAttribute("class", "username-input");
     mailTitle.setAttribute("class", "mail-title");
     mailInput.setAttribute("class", "mail-input");
     pWTitle.setAttribute("class", "password-title");
     pWInput.setAttribute("class", "password-input");
 
-    detailsForm.setAttribute;
+    usernameTitle.setAttribute("for", "mail-input");
+    usernameInput.setAttribute("type", "text");
+    usernameInput.setAttribute("name", "mail-input");
 
     mailTitle.setAttribute("for", "mail-input");
     mailInput.setAttribute("type", "email");
     mailInput.setAttribute("name", "mail-input");
 
     pWTitle.setAttribute("for", "password-input");
-    pWInput.setAttribute("type", "text");
+    pWInput.setAttribute("type", "password");
     pWInput.setAttribute("name", "password-input");
 
+    usernameTitle.innerText = "Username";
     mailTitle.innerText = "Email";
     pWTitle.innerText = "Password";
 
@@ -292,6 +301,8 @@ const mainRender = (state: any) => {
     signer.appendChild(signContent);
     signContent.appendChild(detailsForm);
 
+    detailsForm.appendChild(usernameTitle);
+    detailsForm.appendChild(usernameInput);
     detailsForm.appendChild(mailTitle);
     detailsForm.appendChild(mailInput);
     detailsForm.appendChild(pWTitle);
@@ -305,24 +316,34 @@ const mainRender = (state: any) => {
     );
     signupForm?.addEventListener("submit", (e) => {
       e.preventDefault();
+      const username = (<HTMLInputElement>(
+        document.getElementById("username-input")
+      )).value;
       const email = (<HTMLInputElement>document.getElementById("mail-input"))
         .value;
       const password = (<HTMLInputElement>(
         document.getElementById("password-input")
       )).value;
 
-      auth.createUserWithEmailAndPassword(email, password).then((cred: any) => {
-        console.log(cred);
-        signupForm.reset();
-        if (cred.user.refreshToken) {
-          state.signedIn = "True";
-          state.main = "home";
-          state.token = cred.user.refreshToken;
+      auth
+        .createUserWithEmailAndPassword(email, password)
+        .then((cred: any) => {
+          if (cred.user.refreshToken) {
+            state.signedIn = "True";
+            state.main = "home";
+            state.token = cred.user.refreshToken;
+          }
+          return db.collection("user").doc(cred.user.uid).set({
+            username: username,
+          });
+        })
+        .then((cred: any) => {
+          signupForm.reset();
+          state.username = username;
 
           linksRender(state);
           mainRender(state);
-        }
-      });
+        });
     });
   } else if (state.main === "signin") {
     let trackerCon = document.querySelector("#tracker-container");
@@ -367,7 +388,7 @@ const mainRender = (state: any) => {
     mailInput.setAttribute("name", "mail-input");
 
     pWTitle.setAttribute("for", "password-input");
-    pWInput.setAttribute("type", "text");
+    pWInput.setAttribute("type", "password");
     pWInput.setAttribute("name", "password-input");
 
     mailTitle.innerText = "Email";
