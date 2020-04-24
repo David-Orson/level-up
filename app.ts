@@ -220,6 +220,60 @@ const mainRender = (state: any) => {
       trackerBody.appendChild(trackerBodyTitle);
       trackerBody.appendChild(addSkill);
 
+      const skillsRender = () => {
+        let skillCon = document.querySelector("#skills-container");
+        if (skillCon) {
+          trackerBody?.removeChild(skillCon);
+        }
+        const skillsContainer = document.createElement("div");
+
+        skillsContainer.setAttribute("id", "skills-container");
+        skillsContainer.setAttribute("class", "skills-container");
+
+        trackerBody.appendChild(skillsContainer);
+
+        db.collection(`user/${state.email}/skills`)
+          .get()
+          .then((snapshot: any) => {
+            console.log("snapshot here");
+            console.log(snapshot.docs);
+            snapshot.docs.forEach((doc: any) => {
+              const subjectContainer = document.createElement("div");
+              const subjectTitle = document.createElement("h4");
+
+              subjectContainer.setAttribute("class", "subject-container");
+              subjectTitle.setAttribute("class", "subject-title");
+
+              subjectTitle.textContent = doc.id;
+
+              skillsContainer.appendChild(subjectContainer);
+              subjectContainer.appendChild(subjectTitle);
+
+              const data = doc.data();
+
+              Object.keys(data).forEach((subDoc: any) => {
+                let skillData = Object.keys(data.skill);
+
+                skillData.forEach((skillKey) => {
+                  const skillTitle = document.createElement("h4");
+                  const hours = document.createElement("p");
+
+                  skillTitle.setAttribute("class", "skill-title");
+                  hours.setAttribute("class", "hours");
+
+                  skillTitle.textContent = skillKey;
+                  hours.textContent = data.skill[skillKey];
+
+                  subjectContainer.appendChild(skillTitle);
+                  subjectContainer.appendChild(hours);
+                });
+              });
+            });
+          });
+      };
+
+      skillsRender();
+
       addSkill?.addEventListener("click", () => {
         trackerBody.removeChild(addSkill);
 
@@ -273,12 +327,19 @@ const mainRender = (state: any) => {
           )).value;
           const skillObject: any = {};
           skillObject[skill] = hours;
-          db.collection(`user/${state.email}/skills`).doc("coding").set(
-            {
-              skill: skillObject,
-            },
-            { merge: true }
-          );
+          db.collection(`user/${state.email}/skills`)
+            .doc("coding")
+            .set(
+              {
+                skill: skillObject,
+              },
+              { merge: true }
+            )
+            .then(() => {
+              trackerBody.removeChild(addSkillForm);
+              trackerBody.appendChild(addSkill);
+              skillsRender();
+            });
         });
       });
     } else {

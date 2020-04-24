@@ -177,6 +177,46 @@ var mainRender = function (state) {
             content.appendChild(trackerBody_1);
             trackerBody_1.appendChild(trackerBodyTitle);
             trackerBody_1.appendChild(addSkill_1);
+            var skillsRender_1 = function () {
+                var skillCon = document.querySelector("#skills-container");
+                if (skillCon) {
+                    trackerBody_1 === null || trackerBody_1 === void 0 ? void 0 : trackerBody_1.removeChild(skillCon);
+                }
+                var skillsContainer = document.createElement("div");
+                skillsContainer.setAttribute("id", "skills-container");
+                skillsContainer.setAttribute("class", "skills-container");
+                trackerBody_1.appendChild(skillsContainer);
+                db.collection("user/" + state.email + "/skills")
+                    .get()
+                    .then(function (snapshot) {
+                    console.log("snapshot here");
+                    console.log(snapshot.docs);
+                    snapshot.docs.forEach(function (doc) {
+                        var subjectContainer = document.createElement("div");
+                        var subjectTitle = document.createElement("h4");
+                        subjectContainer.setAttribute("class", "subject-container");
+                        subjectTitle.setAttribute("class", "subject-title");
+                        subjectTitle.textContent = doc.id;
+                        skillsContainer.appendChild(subjectContainer);
+                        subjectContainer.appendChild(subjectTitle);
+                        var data = doc.data();
+                        Object.keys(data).forEach(function (subDoc) {
+                            var skillData = Object.keys(data.skill);
+                            skillData.forEach(function (skillKey) {
+                                var skillTitle = document.createElement("h4");
+                                var hours = document.createElement("p");
+                                skillTitle.setAttribute("class", "skill-title");
+                                hours.setAttribute("class", "hours");
+                                skillTitle.textContent = skillKey;
+                                hours.textContent = data.skill[skillKey];
+                                subjectContainer.appendChild(skillTitle);
+                                subjectContainer.appendChild(hours);
+                            });
+                        });
+                    });
+                });
+            };
+            skillsRender_1();
             addSkill_1 === null || addSkill_1 === void 0 ? void 0 : addSkill_1.addEventListener("click", function () {
                 trackerBody_1.removeChild(addSkill_1);
                 var addSkillForm = document.createElement("form");
@@ -217,9 +257,16 @@ var mainRender = function (state) {
                     var hours = (document.getElementById("hours-input")).value;
                     var skillObject = {};
                     skillObject[skill] = hours;
-                    db.collection("user/" + state.email + "/skills").doc("coding").set({
+                    db.collection("user/" + state.email + "/skills")
+                        .doc("coding")
+                        .set({
                         skill: skillObject,
-                    }, { merge: true });
+                    }, { merge: true })
+                        .then(function () {
+                        trackerBody_1.removeChild(addSkillForm);
+                        trackerBody_1.appendChild(addSkill_1);
+                        skillsRender_1();
+                    });
                 });
             });
         }
