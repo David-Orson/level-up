@@ -18,13 +18,20 @@ var db = firebase.firestore();
 auth.onAuthStateChanged(function (user) {
     if (user) {
         console.log(user);
-        console.log("user " + user.email + " is logged in with token " + user.refreshToken);
-        if (state.signedIn === "false") {
-            state.signedIn = "true";
-            state.token = user.refreshToken;
-            linksRender(state);
-            mainRender(state);
-        }
+        db.collection("user/" + user.email + "/user-details")
+            .get()
+            .then(function (snapshot) {
+            snapshot.docs.forEach(function (doc) {
+                console.log("user " + doc.data().username + " is registered to " + user.email + " and is logged in with token " + user.refreshToken);
+                if (state.signedIn === "false") {
+                    state.signedIn = "true";
+                    state.username = doc.data().username;
+                    state.token = user.refreshToken;
+                    linksRender(state);
+                    mainRender(state);
+                }
+            });
+        });
     }
     else {
         console.log("user is not logged in");
@@ -33,6 +40,7 @@ auth.onAuthStateChanged(function (user) {
 // store
 var state = {
     signedIn: "false",
+    username: "",
     main: "home",
     token: "",
 };
@@ -271,7 +279,12 @@ var mainRender = function (state) {
                     state.main = "home";
                     state.token = cred.user.refreshToken;
                 }
-                return db.collection("user").doc(cred.user.uid).set({
+                return db
+                    .collection("user")
+                    .doc(email)
+                    .collection("user-details")
+                    .doc(cred.user.uid)
+                    .set({
                     username: username,
                 });
             })

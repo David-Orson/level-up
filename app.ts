@@ -21,15 +21,25 @@ const db = firebase.firestore();
 auth.onAuthStateChanged((user: any) => {
   if (user) {
     console.log(user);
-    console.log(
-      `user ${user.email} is logged in with token ${user.refreshToken}`
-    );
-    if (state.signedIn === "false") {
-      state.signedIn = "true";
-      state.token = user.refreshToken;
-      linksRender(state);
-      mainRender(state);
-    }
+    db.collection(`user/${user.email}/user-details`)
+      .get()
+      .then((snapshot: any) => {
+        snapshot.docs.forEach((doc: any) => {
+          console.log(
+            `user ${doc.data().username} is registered to ${
+              user.email
+            } and is logged in with token ${user.refreshToken}`
+          );
+          if (state.signedIn === "false") {
+            state.signedIn = "true";
+            state.username = doc.data().username;
+            state.token = user.refreshToken;
+
+            linksRender(state);
+            mainRender(state);
+          }
+        });
+      });
   } else {
     console.log(`user is not logged in`);
   }
@@ -39,6 +49,7 @@ auth.onAuthStateChanged((user: any) => {
 
 const state = {
   signedIn: "false",
+  username: "",
   main: "home",
   token: "",
 };
@@ -333,9 +344,14 @@ const mainRender = (state: any) => {
             state.main = "home";
             state.token = cred.user.refreshToken;
           }
-          return db.collection("user").doc(cred.user.uid).set({
-            username: username,
-          });
+          return db
+            .collection("user")
+            .doc(email)
+            .collection("user-details")
+            .doc(cred.user.uid)
+            .set({
+              username: username,
+            });
         })
         .then((cred: any) => {
           signupForm.reset();
