@@ -33,7 +33,7 @@ auth.onAuthStateChanged((user: any) => {
           if (state.signedIn === "false") {
             state.signedIn = "true";
             state.username = doc.data().username;
-            state.token = user.refreshToken;
+            (state.email = user.email), (state.token = user.refreshToken);
 
             linksRender(state);
             mainRender(state);
@@ -50,8 +50,9 @@ auth.onAuthStateChanged((user: any) => {
 const state = {
   signedIn: "false",
   username: "",
-  main: "home",
+  email: "",
   token: "",
+  main: "home",
 };
 
 // Nav
@@ -178,35 +179,108 @@ const mainRender = (state: any) => {
       }
       let trackerCon = document.querySelector("#tracker-container");
       if (trackerCon) {
-      } else {
-        const trackerContainer = document.createElement("div");
-        const tracker = document.createElement("div");
-
-        let content = document.createElement("div");
-
-        const trackerTitle = document.createElement("h2");
-
-        trackerContainer.setAttribute("id", "tracker-container");
-        tracker.setAttribute("id", "card1");
-
-        content.setAttribute("id", "tracker-content");
-
-        trackerTitle.setAttribute("id", "title--tracker");
-
-        trackerContainer.setAttribute("class", "tracker-container");
-        tracker.setAttribute("class", "cards");
-
-        content.setAttribute("class", "tracker-content");
-
-        trackerTitle.setAttribute("class", "title--tracker");
-
-        trackerTitle.textContent = "tracker";
-
-        main?.appendChild(trackerContainer);
-        trackerContainer.appendChild(tracker);
-        tracker.appendChild(content);
-        content.appendChild(trackerTitle);
+        main?.removeChild(trackerCon);
       }
+      const trackerContainer = document.createElement("div");
+      const tracker = document.createElement("div");
+
+      let content = document.createElement("div");
+
+      const trackerTitle = document.createElement("h2");
+
+      const trackerBody = document.createElement("div");
+      const trackerBodyTitle = document.createElement("h3");
+      const addSkill = document.createElement("p");
+
+      trackerContainer.setAttribute("id", "tracker-container");
+      tracker.setAttribute("id", "card1");
+      content.setAttribute("id", "tracker-content");
+      trackerTitle.setAttribute("id", "title--tracker");
+      trackerBody.setAttribute("id", "tracker-body");
+      trackerBodyTitle.setAttribute("id", "title--tracker-body");
+      addSkill.setAttribute("id", "add-skill");
+
+      trackerContainer.setAttribute("class", "tracker-container");
+      tracker.setAttribute("class", "cards");
+      content.setAttribute("class", "tracker-content");
+      trackerTitle.setAttribute("class", "title--tracker");
+      trackerBody.setAttribute("class", "tracker-body");
+      trackerBodyTitle.setAttribute("class", "title--tracker-body");
+      addSkill.setAttribute("class", "add-skill");
+
+      trackerTitle.textContent = "tracker";
+      trackerBodyTitle.textContent = "Skills";
+      addSkill.textContent = "+";
+
+      main?.appendChild(trackerContainer);
+      trackerContainer.appendChild(tracker);
+      tracker.appendChild(content);
+      content.appendChild(trackerTitle);
+      content.appendChild(trackerBody);
+      trackerBody.appendChild(trackerBodyTitle);
+      trackerBody.appendChild(addSkill);
+
+      addSkill?.addEventListener("click", () => {
+        trackerBody.removeChild(addSkill);
+
+        const addSkillForm = document.createElement("form");
+        const skillLabel = document.createElement("label");
+        const skillInput = document.createElement("input");
+        const hoursLabel = document.createElement("label");
+        const hoursInput = document.createElement("input");
+        const skillFormButton = document.createElement("button");
+
+        addSkillForm.setAttribute("id", "skill-form");
+        skillLabel.setAttribute("id", "skill-label");
+        skillInput.setAttribute("id", "skill-input");
+        hoursLabel.setAttribute("id", "hours-label");
+        hoursInput.setAttribute("id", "hours-input");
+        skillFormButton.setAttribute("id", "skill-form-btn");
+
+        addSkillForm.setAttribute("class", "skill-form");
+        skillLabel.setAttribute("class", "skill-label");
+        skillInput.setAttribute("class", "skill-input");
+        hoursLabel.setAttribute("class", "hours-label");
+        hoursInput.setAttribute("class", "hours-input");
+        skillFormButton.setAttribute("class", "skill-form-btn");
+
+        skillLabel.setAttribute("for", "skill-input");
+        hoursLabel.setAttribute("for", "hours-input");
+        skillInput.setAttribute("name", "skill-input");
+        hoursInput.setAttribute("name", "hours-input");
+
+        skillLabel.textContent = "Skill";
+        hoursLabel.textContent = "hours";
+        skillFormButton.textContent = "ADD SKILL";
+
+        trackerBody.appendChild(addSkillForm);
+        addSkillForm.appendChild(skillLabel);
+        addSkillForm.appendChild(skillInput);
+        addSkillForm.appendChild(hoursLabel);
+        addSkillForm.appendChild(hoursInput);
+        addSkillForm.appendChild(skillFormButton);
+
+        const skillForm: HTMLFormElement | null = document.querySelector(
+          "#skill-form"
+        );
+        skillForm?.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const skill = (<HTMLInputElement>(
+            document.getElementById("skill-input")
+          )).value;
+          const hours = (<HTMLInputElement>(
+            document.getElementById("hours-input")
+          )).value;
+          const skillObject: any = {};
+          skillObject[skill] = hours;
+          db.collection(`user/${state.email}/skills`).doc("coding").set(
+            {
+              skill: skillObject,
+            },
+            { merge: true }
+          );
+        });
+      });
     } else {
       let signcon = document.querySelector("#sign-container");
       if (signcon) {
