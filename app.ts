@@ -96,7 +96,7 @@ const linksRender = (state: any) => {
       mainRender(state);
     });
   } else {
-    let myIn = document.querySelector("#signin");
+    let myIn = document.querySelector("#links-container");
 
     if (myIn) {
       navContainer.removeChild(myIn);
@@ -217,100 +217,183 @@ const mainRender = (state: any) => {
     }
     let signCon = document.querySelector("#sign-container");
     if (signCon) {
-    } else {
-      const signContainer = document.createElement("div");
-      const signer = document.createElement("div");
-      const signContent = document.createElement("div");
-      const detailsForm = document.createElement("form");
-      const mailTitle = document.createElement("label");
-      const mailInput = document.createElement("input");
-      const pWTitle = document.createElement("label");
-      const pWInput = document.createElement("input");
-
-      signContainer.setAttribute("id", "sign-container");
-      signer.setAttribute("id", "signer");
-      signContent.setAttribute("id", "sign-content");
-      detailsForm.setAttribute("id", "details-form");
-      mailTitle.setAttribute("id", "mail-title");
-      mailInput.setAttribute("id", "mail-input");
-      pWTitle.setAttribute("id", "password-title");
-      pWInput.setAttribute("id", "password-input");
-
-      signContainer.setAttribute("class", "sign-container");
-      signer.setAttribute("class", "cards");
-      signContent.setAttribute("class", "sign-content");
-      detailsForm.setAttribute("class", "details-form");
-      mailTitle.setAttribute("class", "mail-title");
-      mailInput.setAttribute("class", "mail-input");
-      pWTitle.setAttribute("class", "password-title");
-      pWInput.setAttribute("class", "password-input");
-
-      detailsForm.setAttribute;
-
-      mailTitle.setAttribute("for", "mail-input");
-      mailInput.setAttribute("type", "email");
-      mailInput.setAttribute("name", "mail-input");
-
-      pWTitle.setAttribute("for", "password-input");
-      pWInput.setAttribute("type", "text");
-      pWInput.setAttribute("name", "password-input");
-
-      mailTitle.innerText = "Email";
-      pWTitle.innerText = "Password";
-
-      let signIn = document.createElement("button");
-
-      signIn.textContent = "SIGNUP";
-      signIn.setAttribute("id", "signinFinal");
-      signIn.setAttribute("class", "btn");
-
-      main?.appendChild(signContainer);
-      signContainer.appendChild(signer);
-      signer.appendChild(signContent);
-      signContent.appendChild(detailsForm);
-
-      detailsForm.appendChild(mailTitle);
-      detailsForm.appendChild(mailInput);
-      detailsForm.appendChild(pWTitle);
-      detailsForm.appendChild(pWInput);
-      detailsForm.appendChild(signIn);
-
-      // auth
-
-      const signupForm: HTMLFormElement | null = document.querySelector(
-        "#details-form"
-      );
-      signupForm?.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const email = (<HTMLInputElement>document.getElementById("mail-input"))
-          .value;
-        const password = (<HTMLInputElement>(
-          document.getElementById("password-input")
-        )).value;
-
-        auth
-          .createUserWithEmailAndPassword(email, password)
-          .then((cred: any) => {
-            console.log(cred);
-            signupForm.reset();
-            if (cred.user.refreshToken) {
-              state.signedIn = "True";
-              state.main = "home";
-              state.token = cred.user.refreshToken;
-
-              linksRender(state);
-              mainRender(state);
-            }
-          });
-      });
-
-      /* signIn.addEventListener("click", () => {
-        state.signedIn = "true";
-        state.main = "home";
-        linksRender(state);
-        mainRender(state);
-      }); */
+      main?.removeChild(signCon);
     }
+    const signContainer = document.createElement("div");
+    const signer = document.createElement("div");
+    const signContent = document.createElement("div");
+    const detailsForm = document.createElement("form");
+    const mailTitle = document.createElement("label");
+    const mailInput = document.createElement("input");
+    const pWTitle = document.createElement("label");
+    const pWInput = document.createElement("input");
+
+    signContainer.setAttribute("id", "sign-container");
+    signer.setAttribute("id", "signer");
+    signContent.setAttribute("id", "sign-content");
+    detailsForm.setAttribute("id", "details-form");
+    mailTitle.setAttribute("id", "mail-title");
+    mailInput.setAttribute("id", "mail-input");
+    pWTitle.setAttribute("id", "password-title");
+    pWInput.setAttribute("id", "password-input");
+
+    signContainer.setAttribute("class", "sign-container");
+    signer.setAttribute("class", "cards");
+    signContent.setAttribute("class", "sign-content");
+    detailsForm.setAttribute("class", "details-form");
+    mailTitle.setAttribute("class", "mail-title");
+    mailInput.setAttribute("class", "mail-input");
+    pWTitle.setAttribute("class", "password-title");
+    pWInput.setAttribute("class", "password-input");
+
+    detailsForm.setAttribute;
+
+    mailTitle.setAttribute("for", "mail-input");
+    mailInput.setAttribute("type", "email");
+    mailInput.setAttribute("name", "mail-input");
+
+    pWTitle.setAttribute("for", "password-input");
+    pWInput.setAttribute("type", "text");
+    pWInput.setAttribute("name", "password-input");
+
+    mailTitle.innerText = "Email";
+    pWTitle.innerText = "Password";
+
+    let signIn = document.createElement("button");
+
+    signIn.textContent = "SIGNUP";
+    signIn.setAttribute("id", "signinFinal");
+    signIn.setAttribute("class", "btn");
+
+    main?.appendChild(signContainer);
+    signContainer.appendChild(signer);
+    signer.appendChild(signContent);
+    signContent.appendChild(detailsForm);
+
+    detailsForm.appendChild(mailTitle);
+    detailsForm.appendChild(mailInput);
+    detailsForm.appendChild(pWTitle);
+    detailsForm.appendChild(pWInput);
+    detailsForm.appendChild(signIn);
+
+    // auth
+
+    const signupForm: HTMLFormElement | null = document.querySelector(
+      "#details-form"
+    );
+    signupForm?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = (<HTMLInputElement>document.getElementById("mail-input"))
+        .value;
+      const password = (<HTMLInputElement>(
+        document.getElementById("password-input")
+      )).value;
+
+      auth.createUserWithEmailAndPassword(email, password).then((cred: any) => {
+        console.log(cred);
+        signupForm.reset();
+        if (cred.user.refreshToken) {
+          state.signedIn = "True";
+          state.main = "home";
+          state.token = cred.user.refreshToken;
+
+          linksRender(state);
+          mainRender(state);
+        }
+      });
+    });
+  } else if (state.main === "signin") {
+    let trackerCon = document.querySelector("#tracker-container");
+    if (trackerCon) {
+      main?.removeChild(trackerCon);
+    }
+    let signCon = document.querySelector("#sign-container");
+    if (signCon) {
+      main?.removeChild(signCon);
+    }
+    const signContainer = document.createElement("div");
+    const signer = document.createElement("div");
+    const signContent = document.createElement("div");
+    const detailsForm = document.createElement("form");
+    const mailTitle = document.createElement("label");
+    const mailInput = document.createElement("input");
+    const pWTitle = document.createElement("label");
+    const pWInput = document.createElement("input");
+
+    signContainer.setAttribute("id", "sign-container");
+    signer.setAttribute("id", "signer");
+    signContent.setAttribute("id", "sign-content");
+    detailsForm.setAttribute("id", "details-form");
+    mailTitle.setAttribute("id", "mail-title");
+    mailInput.setAttribute("id", "mail-input");
+    pWTitle.setAttribute("id", "password-title");
+    pWInput.setAttribute("id", "password-input");
+
+    signContainer.setAttribute("class", "sign-container");
+    signer.setAttribute("class", "cards");
+    signContent.setAttribute("class", "sign-content");
+    detailsForm.setAttribute("class", "details-form");
+    mailTitle.setAttribute("class", "mail-title");
+    mailInput.setAttribute("class", "mail-input");
+    pWTitle.setAttribute("class", "password-title");
+    pWInput.setAttribute("class", "password-input");
+
+    detailsForm.setAttribute;
+
+    mailTitle.setAttribute("for", "mail-input");
+    mailInput.setAttribute("type", "email");
+    mailInput.setAttribute("name", "mail-input");
+
+    pWTitle.setAttribute("for", "password-input");
+    pWInput.setAttribute("type", "text");
+    pWInput.setAttribute("name", "password-input");
+
+    mailTitle.innerText = "Email";
+    pWTitle.innerText = "Password";
+
+    let signIn = document.createElement("button");
+
+    signIn.textContent = "SIGNIN";
+    signIn.setAttribute("id", "signinFinal");
+    signIn.setAttribute("class", "btn");
+
+    main?.appendChild(signContainer);
+    signContainer.appendChild(signer);
+    signer.appendChild(signContent);
+    signContent.appendChild(detailsForm);
+
+    detailsForm.appendChild(mailTitle);
+    detailsForm.appendChild(mailInput);
+    detailsForm.appendChild(pWTitle);
+    detailsForm.appendChild(pWInput);
+    detailsForm.appendChild(signIn);
+
+    // auth
+
+    const signupForm: HTMLFormElement | null = document.querySelector(
+      "#details-form"
+    );
+    signupForm?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = (<HTMLInputElement>document.getElementById("mail-input"))
+        .value;
+      const password = (<HTMLInputElement>(
+        document.getElementById("password-input")
+      )).value;
+
+      auth.signInWithEmailAndPassword(email, password).then((cred: any) => {
+        console.log(cred);
+        signupForm.reset();
+        if (cred.user.refreshToken) {
+          state.signedIn = "True";
+          state.main = "home";
+          state.token = cred.user.refreshToken;
+
+          linksRender(state);
+          mainRender(state);
+        }
+      });
+    });
   }
 };
 
