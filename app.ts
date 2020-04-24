@@ -1,3 +1,19 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyBRtCV8NpJCXYuXEZTR8YuPWurH5wgL1MA",
+  authDomain: "level-up-cce3c.firebaseapp.com",
+  databaseURL: "https://level-up-cce3c.firebaseio.com",
+  projectId: "level-up-cce3c",
+  storageBucket: "level-up-cce3c.appspot.com",
+  messagingSenderId: "850328883202",
+  appId: "1:850328883202:web:356223dfa4d7618f2d571b",
+};
+// Initialize Firebase
+/// <reference path="firebase" />
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
 // State
 
 const state = {
@@ -249,7 +265,11 @@ const mainRender = (state: any) => {
           document.getElementById("password-input")
         )).value;
 
-        console.log(email, password);
+        auth
+          .createUserWithEmailAndPassword(email, password)
+          .then((cred: any) => {
+            console.log(cred);
+          });
       });
 
       /* signIn.addEventListener("click", () => {
